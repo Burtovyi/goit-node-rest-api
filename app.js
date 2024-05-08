@@ -10,12 +10,18 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
-app.use("/api/contacts", contactsRouter);
+// Root route to confirm server is running
+// app.get('/', contactsRouter);
 
+// Route for handling contacts
+app.use("/db/contacts", contactsRouter);
+
+// Handler for 404 - Route not found
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
+// General error handler
 app.use((err, req, res, next) => {
   const { status = 500, message = "Server error" } = err;
   res.status(status).json({ message });
