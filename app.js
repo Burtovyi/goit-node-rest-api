@@ -10,9 +10,6 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
-// Root route to confirm server is running
-// app.get('/', contactsRouter);
-
 // Route for handling contacts
 app.use("/db/contacts", contactsRouter);
 
