@@ -1,7 +1,6 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-
 import contactsRouter from "./routes/contactsRouter.js";
 
 const app = express();
@@ -11,7 +10,7 @@ app.use(cors());
 app.use(express.json());
 
 // Route for handling contacts
-app.use("/db/contacts", contactsRouter);
+app.use("/api/contacts", contactsRouter);
 
 // Handler for 404 - Route not found
 app.use((_, res) => {

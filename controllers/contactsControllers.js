@@ -1,48 +1,78 @@
 import * as contactsServices from "../services/contactsServices.js";
+import { createContactSchema, updateContactSchema } from "../schemas/contactsSchemas.js";
 
-export const getAllContacts = async (req, res) => {
-    const contacts = await contactsServices.listContacts();
-    res.json(contacts);
+import HttpError from "../helpers/HttpError.js";
+
+export const getAllContacts = async (req, res, next) => {
+    try {
+    const result = await contactsServices.listContacts();
+    res.json(result);
+} catch (error) {
+   next(error)
+}
 };
 
-export const getOneContact = async (req, res) => {
-    const contact = await contactsServices.getContactById(req.params.id);
-    if (!contact) {
+export const getOneContact = async (req, res, next) => {
+    try {
+        const result = await contactsServices.getContactById(req.params.id);
+    if (!result) {
         return res.status(404).json({ message: "Not found" });
     }
-    res.json(contact);
+    res.json(result);
+} catch (error) {
+   next(error)
+}
 };
 
-
-export const deleteContact = async (req, res) => {
-    const contact = await contactsServices.removeContact(req.params.id);
-    if (!contact) {
-        return res.status(404).json({ message: "Not found" });
+export const createContact = async (req, res, next) => {
+    try {
+        const { error } = createContactSchema.validate(req.body);
+        if (error) {
+            throw next(HttpError(400, error.message));
+        }
+        
+        
+        const result = await contactsServices.addContact(
+            req.body.name,
+            req.body.email,
+            req.body.phone
+        );
+        res.status(201).json(result);
+    } catch (error) {
+        next(error)
     }
-    res.json({ message: "contact deleted" });
 };
 
-
-export const createContact = async (req, res) => {
-    const contact = await contactsServices.addContact(
-        req.body.name,
-        req.body.email,
-        req.body.phone
-    );
-    res.status(201).json(contact);
-};
-
-
-export const updateContact = async (req, res) => {
-    const contact = await contactsServices.updateContactById(
-        req.params.id,
-        req.body.name,
-        req.body.email,
-        req.body.phone
-    );
-    if (!contact) {
-        return res.status(404).json({ message: "Not found" });
+export const updateContact = async (req, res, next) => {
+    try {
+        const { error } = updateContactSchema.validate(req.body);
+        if (error) {
+            throw next(HttpError(400, error.message));
+        }
+        
+        const result = await contactsServices.updateContactById(
+            req.params.id,
+            req.body.name,
+            req.body.email,
+            req.body.phone
+        );
+        if (!result) {
+            return res.status(404).json({ message: "Not found" });
+        }
+        res.json(result);
+    } catch (error) {
+        next(error)
     }
-    res.json(contact);
 }
 
+export const deleteContact = async (req, res, next) => {
+try {
+    const result = await contactsServices.removeContact(req.params.id);
+    if (!result) {
+        return res.status(404).json({ message: "Not found" });
+    }
+    res.json(result);
+} catch (error) {
+   next(error)
+}
+};
