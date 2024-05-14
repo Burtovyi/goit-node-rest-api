@@ -1,5 +1,6 @@
 import express from "express";
 import { getAllContacts, getOneContact, deleteContact, createContact, updateContact } from "../controllers/contactsControllers.js";
+import isEmptyBody from "../middlewares/isEmptyBody.js";
 
 const contactsRouter = express.Router();
 
@@ -11,6 +12,6 @@ contactsRouter.delete("/:id", deleteContact);
 
 contactsRouter.post("/", createContact);
 
-contactsRouter.put("/:id", updateContact);
+contactsRouter.put("/:id", isEmptyBody, updateContact);
 
 export default contactsRouter;
