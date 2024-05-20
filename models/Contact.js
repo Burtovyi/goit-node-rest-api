@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { handleSaveError } from "../models/hooks.js";
+
 const { Schema, model } = mongoose;
 
 const contactSchema = new Schema({

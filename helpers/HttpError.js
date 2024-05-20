@@ -4,12 +4,16 @@ const messageList = {
     403: "Forbidden",
     404: "Not Found",
     409: "Conflict",
-}
+};
 
-const HttpError = (status, message = messageList[status]) => {
-    const error = new Error(message);
+const HttpError = (status, message = null) => {
+    if (!messageList.hasOwnProperty(status)) {
+        throw new Error(`Invalid status code: ${status}`);
+    }
+    const errorMessage = message || messageList[status];
+    const error = new Error(errorMessage);
     error.status = status;
     return error;
-}
+};
 
-export default HttpError
+export default HttpError;
