@@ -5,35 +5,39 @@ import contactsRouter from "./routes/contactsRouter.js";
 import mongoose from "mongoose";
 import "dotenv/config";
 
-const {DB_HOST, PORT = 3000} = process.env;
+const { DB_HOST, PORT = 3000 } = process.env;
+
+if (!DB_HOST) {
+  console.error("DB_HOST is not defined in environment variables");
+  process.exit(1);
+}
+
 const app = express();
 
 app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
-// Route for handling contacts
 app.use("/api/contacts", contactsRouter);
 
-// Handler for 404 - Route not found
 app.use((_, res) => {
   res.status(404).json({ message: "Route not found" });
 });
 
-// General error handler
 app.use((err, req, res, next) => {
+  console.error(err.stack);
   const { status = 500, message = "Server error" } = err;
   res.status(status).json({ message });
 });
 
 mongoose.connect(DB_HOST)
   .then(() => {
-app.listen(PORT, () => {
-  console.log(`Server is running. Use our API on port: ${PORT}`);
-});
-    console.log("Database connection successful")
+    app.listen(PORT, () => {
+      console.log(`Server is running. Use our API on port: ${PORT}`);
+    });
+    console.log("Database connection successful");
   })
   .catch((err) => {
-    console.log(err.message)
-    process.exit(1)
+    console.error("Database connection error:", err.message);
+    process.exit(1);
   });

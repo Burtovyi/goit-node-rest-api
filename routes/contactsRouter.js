@@ -11,10 +11,10 @@ contactsRouter.get("/:id", isValidID, getOneContact);
 
 contactsRouter.delete("/:id", isValidID, deleteContact);
 
-contactsRouter.post("/", createContact);
+contactsRouter.post("/", isEmptyBody, createContact);
 
 contactsRouter.put("/:id", isValidID, isEmptyBody, updateContact);
 
-contactsRouter.patch("/:id/favorite", isValidID, updateContact);
+contactsRouter.patch("/:id/favorite", isValidID, isEmptyBody, updateContact);
 
 export default contactsRouter;
