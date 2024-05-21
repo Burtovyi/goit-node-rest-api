@@ -1,5 +1,5 @@
 import * as contactsServices from "../services/contactsServices.js";
-import { createContactSchema, updateContactSchema } from "../schemas/contactsSchemas.js";
+import { createContactSchema, updateContactSchema, updateFavoriteSchema } from "../schemas/contactsSchemas.js";
 import HttpError from "../helpers/HttpError.js";
 
 export const getAllContacts = async (req, res, next) => {
@@ -58,7 +58,7 @@ export const updateContact = async (req, res, next) => {
 
 export const updateFavorite = async (req, res, next) => {
     try {
-        const { error } = updateContactSchema.validate(req.body);
+        const { error } = updateFavoriteSchema.validate(req.body); // Use updateFavoriteSchema here
         if (error) {
             return next(HttpError(400, error.message));
         }
