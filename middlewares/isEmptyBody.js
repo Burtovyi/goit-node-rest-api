@@ -1,8 +1,11 @@
 import HttpError from "../helpers/HttpError.js";
-const isEmptyBody = (req, res, next) => {
-    if (Object.keys(req.body).length === 0) {
-        return next(HttpError(400, "Body must have at least one field"));
+
+const isEmptyBody = (req, res, next)=> {
+    const {length} = Object.keys(req.body);
+    if(!length) {
+        return next(HttpError(400, "Body must have at least one key"));
     }
     next();
 }
+
 export default isEmptyBody;
