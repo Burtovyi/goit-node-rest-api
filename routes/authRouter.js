@@ -4,7 +4,6 @@ import isEmptyBody from "../middlewares/isEmptyBody.js";
 import authenticate from "../middlewares/authenticate.js";
 import validateBody from "../helpers/validateBody.js";
 import { authSignInSchema, authSignUpSchema} from "../schemas/authSchemas.js";
-import HttpError from "../helpers/HttpError.js";
 
 const authRouter = express.Router();
 
