@@ -1,12 +1,7 @@
 import jwt from "jsonwebtoken";
 
-const { JWT_SECRET } = process.env;
+const {JWT_SECRET} = process.env;
 
-export const createToken = (payload) => {
-  try {
-    return jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-  } catch (error) {
-    console.error("Error signing the token:", error);
-    throw new Error("Token creation failed");
-  }
-};
+export const createToken = payload => jwt.sign(payload, JWT_SECRET, {expiresIn: "23h"});
+
+export const verifyToken = token => jwt.verify(token, JWT_SECRET);
