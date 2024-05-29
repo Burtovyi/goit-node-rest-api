@@ -1,8 +1,9 @@
 import * as contactsServices from "../services/contactsServices.js";
 import {updateFavoriteSchema } from "../schemas/contactsSchemas.js";
 import HttpError from "../helpers/HttpError.js";
+import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
-export const getAllContacts = async (req, res, next) => {
+const getAllContacts = async (req, res, next) => {
    const {_id: owner} = req.user;
     const filter = {owner};
     const fields = "-createdAt -updatedAt";
@@ -12,13 +13,18 @@ export const getAllContacts = async (req, res, next) => {
     const result = await contactsServices.listContacts({filter, fields, settings});
     const total = await contactsServices.countContacts(filter);
 
+    console.log(result);
+    
     res.json({
         total,
+        page: Number(page),
+        limit: Number(limit),
         result,
+        pages: Math.ceil(total / limit),
     });
 };
 
-export const getOneContact = async (req, res, next) => {
+const getOneContact = async (req, res, next) => {
     const { id: _id } = req.params;
     const {_id: owner} = req.user;
     const result = await contactsServices.getContactById({_id, owner});
@@ -29,14 +35,14 @@ export const getOneContact = async (req, res, next) => {
     res.json(result);
 };
 
-export const createContact = async (req, res, next) => {
+const createContact = async (req, res, next) => {
     const {_id: owner} = req.user;
     const result = await contactsServices.addContact({...req.body, owner});
 
     res.status(201).json(result);
 };
 
-export const updateContact = async (req, res, next) => {
+const updateContact = async (req, res, next) => {
     const { id: _id } = req.params;
     const {_id: owner} = req.user;
     const result = await contactsServices.updateContactById({_id, owner}, req.body);
@@ -47,7 +53,7 @@ export const updateContact = async (req, res, next) => {
     res.json(result);
 };
 
-export const updateFavorite = async (req, res, next) => {
+const updateFavorite = async (req, res, next) => {
     try {
         const { error } = updateFavoriteSchema.validate(req.body);
         if (error) {
@@ -64,7 +70,7 @@ export const updateFavorite = async (req, res, next) => {
     }
 };
 
-export const deleteContact = async (req, res, next) => {
+const deleteContact = async (req, res, next) => {
     const { id: _id } = req.params;
     const {_id: owner} = req.user;
     const result = await contactsServices.removeContact({_id, owner});
@@ -77,4 +83,13 @@ export const deleteContact = async (req, res, next) => {
     res.json({
         message: "Delete success"
     })
+};
+
+export default {
+    getAllContacts: ctrlWrapper(getAllContacts),
+    getOneContact: ctrlWrapper(getOneContact),
+    createContact: ctrlWrapper(createContact),
+    updateContact: ctrlWrapper(updateContact),
+    updateFavorite: ctrlWrapper(updateFavorite),
+    deleteContact: ctrlWrapper(deleteContact),
 };

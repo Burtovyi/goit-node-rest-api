@@ -5,6 +5,7 @@ export const listContacts = (search = {})=> {
     return Contact.find(filter, fields, settings).populate("owner", "username email");
 };
 
+
 export const countContacts = filter => Contact.countDocuments(filter);
 
 export const getContactById = (filter)=> Contact.findOne(filter);
