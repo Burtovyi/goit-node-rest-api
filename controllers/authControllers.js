@@ -1,4 +1,4 @@
-import * as authServices from "../services/authServices.js";
+import {findUser, saveUser, updateUser} from "../services/authServices.js";
 
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 
@@ -8,12 +8,12 @@ import { createToken } from "../helpers/jwt.js";
 
 const signup = async(req, res)=> {
     const {email} = req.body;
-    const user = await authServices.findUser({email});
+    const user = await findUser({email});
     if(user) {
         throw HttpError(409, "Email already use");
     }
 
-    const newUser = await authServices.saveUser(req.body);
+    const newUser = await saveUser(req.body);
 
     res.status(201).json({
         username: newUser.username,
@@ -23,7 +23,7 @@ const signup = async(req, res)=> {
 
 const signin = async(req, res)=> {
     const {email, password} = req.body;
-    const user = await authServices.findUser({email});
+    const user = await findUser({email});
     if(!user) {
         throw HttpError(401, "Email or password invalid");
     }
@@ -38,7 +38,7 @@ const signin = async(req, res)=> {
     };
 
     const token = createToken(payload);
-    await authServices.updateUser({_id: id}, {token});
+    await updateUser({_id: id}, {token});
 
     res.json({
         token,
@@ -56,7 +56,7 @@ const getCurrent = (req, res)=> {
 
 const signout = async(req, res)=> {
     const {_id} = req.user;
-    await authServices.updateUser({_id}, {token: ""});
+    await updateUser({_id}, {token: ""});
     
     res.json({
         message: "Signout success"
