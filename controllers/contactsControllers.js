@@ -53,6 +53,7 @@ const updateContact = async (req, res, next) => {
     res.json(result);
 };
 
+
 const updateFavorite = async (req, res, next) => {
     try {
         const { error } = updateFavoriteSchema.validate(req.body);
@@ -60,7 +61,14 @@ const updateFavorite = async (req, res, next) => {
             return next(HttpError(400, error.message));
         }
 
-        const result = await contactsServices.updateContactById(req.params.id, req.body);
+        const { id: _id } = req.params;
+        const { _id: owner } = req.user;
+        const contact = await contactsServices.getContactById({ _id, owner });
+        if (!contact) {
+            return res.status(404).json({ message: "Not found" });
+        }
+
+        const result = await contactsServices.updateContactById({ _id, owner }, req.body);
         if (!result) {
             return res.status(404).json({ message: "Not found" });
         }
