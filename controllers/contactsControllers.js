@@ -13,7 +13,6 @@ const getAllContacts = async (req, res, next) => {
     const result = await contactsServices.listContacts({filter, fields, settings});
     const total = await contactsServices.countContacts(filter);
 
-    console.log(result);
     
     res.json({
         total,
@@ -63,10 +62,6 @@ const updateFavorite = async (req, res, next) => {
 
         const { id: _id } = req.params;
         const { _id: owner } = req.user;
-        const contact = await contactsServices.getContactById({ _id, owner });
-        if (!contact) {
-            return res.status(404).json({ message: "Not found" });
-        }
 
         const result = await contactsServices.updateContactById({ _id, owner }, req.body);
         if (!result) {

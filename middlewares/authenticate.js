@@ -6,7 +6,6 @@ import { findUser } from "../services/authServices.js";
 
 const authenticate = async (req, res, next) => {
     const { authorization } = req.headers;
-    console.log(req.headers);
     if (!authorization) {
         return next(HttpError(401, "Authorization header not found"));
     }
