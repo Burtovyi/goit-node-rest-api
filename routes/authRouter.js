@@ -16,7 +16,6 @@ authRouter.get("/avatar/:fileName", authenticate, authControllers.getAvatar);
 
 authRouter.post("/login", isEmptyBody, validateBody(authSignInSchema), authControllers.signin);
 
-
 authRouter.get("/verify/:verificationToken", authControllers.verify);
 
 authRouter.get("/current", authenticate, authControllers.getCurrent);
