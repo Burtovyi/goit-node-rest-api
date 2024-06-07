@@ -52,6 +52,15 @@ const verify = async (req, res) => {
         throw HttpError(404, "User not found");
     }
     await updateUser({ _id: user._id }, { verify: true, verificationToken: null });
+
+    const verifiedEmail = {
+        to: user.email,
+        subject: "Verification Successful",
+        html: `<p>Your email has been successfully verified.</p>`,
+    };
+    
+    await sendEmail(verifiedEmail);
+
     res.json({
         "message": "Verification successful"
     });
