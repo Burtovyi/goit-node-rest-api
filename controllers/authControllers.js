@@ -66,6 +66,30 @@ const verify = async (req, res) => {
     });
 }
 
+const resendVerifyEmail = async (req, res) => {
+    const { email } = req.body;
+    const user = await findUser({ email });
+    if(!user) {
+        throw HttpError(404, "User not found");
+    }
+
+    if(user.verify) {
+        throw HttpError(400, "Verification has already been passed");
+    }
+
+    const verifyEmail = {
+        to: email,
+        subject: "Verify email",
+        html: `<a target="_blank" href="http://localhost:3000/users/verify/${user.verificationToken}">Verify email</a>`,
+    };
+    
+    await sendEmail(verifyEmail);
+    
+    res.json({
+        "message": "Verification email sent"
+    });
+}
+
 const signin = async (req, res) => {
     const {email, password} = req.body;
     const user = await findUser({email});
@@ -156,6 +180,7 @@ const signout = async(req, res) => {
 export default {
     signup: ctrlWrapper(signup),
     verify: ctrlWrapper(verify),
+    resendVerifyEmail: ctrlWrapper(resendVerifyEmail),
     signin: ctrlWrapper(signin),
     getCurrent: ctrlWrapper(getCurrent),
     updateAvatar: ctrlWrapper(updateAvatar),
