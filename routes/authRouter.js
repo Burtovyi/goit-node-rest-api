@@ -18,6 +18,8 @@ authRouter.post("/login", isEmptyBody, validateBody(authSignInSchema), authContr
 
 authRouter.get("/verify/:verificationToken", authControllers.verify);
 
+authRouter.post("/verify", isEmptyBody, authControllers.resendVerifyEmail);
+
 authRouter.get("/current", authenticate, authControllers.getCurrent);
 
 authRouter.post("/logout", authenticate, authControllers.signout);
